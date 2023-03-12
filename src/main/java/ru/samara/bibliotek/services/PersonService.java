@@ -24,4 +24,8 @@ public class PersonService {
         return personRepository.findByFullName(fullname);
     }
 
+    public List<Person> findALL(){
+        return personRepository.findAll();
+    }
+
 }

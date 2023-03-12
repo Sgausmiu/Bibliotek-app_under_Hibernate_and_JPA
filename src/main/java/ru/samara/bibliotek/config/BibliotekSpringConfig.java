@@ -27,10 +27,10 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("ru.samara.bibliotek")
-@EnableWebMvc
-@EnableTransactionManagement
 @PropertySource("classpath:hibernate.properties")
+@EnableTransactionManagement
 @EnableJpaRepositories("ru.samara.bibliotek.repositories")
+@EnableWebMvc
 public class BibliotekSpringConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
@@ -86,6 +86,7 @@ public class BibliotekSpringConfig implements WebMvcConfigurer {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", env.getRequiredProperty("hibernate.show_sql"));
+
         return properties;
     }
 
