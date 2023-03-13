@@ -4,6 +4,7 @@ package ru.samara.bibliotek.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "Person")
@@ -20,9 +21,10 @@ public class Person {
     @Size(min = 1920, max = 2100, message = "between 1920 and 2100 characters")
     private int yearBirth;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
 
     //Конструктор Person по умолчанию для Spring
-
     public Person(){
 
     }
@@ -55,6 +57,14 @@ public class Person {
 
     public void setYearBirth(int yearBirth) {
         this.yearBirth = yearBirth;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override

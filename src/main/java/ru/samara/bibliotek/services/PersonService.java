@@ -3,9 +3,12 @@ package ru.samara.bibliotek.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.samara.bibliotek.models.Book;
 import ru.samara.bibliotek.models.Person;
 import ru.samara.bibliotek.repositories.PersonRepository;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +31,43 @@ public class PersonService {
         return personRepository.findAll();
     }
 
+    public Person findOne(int id) {
+        Optional<Person> foundPerson = personRepository.findById(id);
+        return foundPerson.orElse(null);
+    }
+    @Transactional
+    public void save (Person person) {
+         personRepository.save(person);
+    }
+
+    @Transactional
+    public void update (int id, Person updatedPerson){
+        updatedPerson.setId(id);
+        personRepository.save(updatedPerson);
+    }
+
+    @Transactional
+    public void  delete(int id) {
+        personRepository.deleteById(id);
+    }
+
+    public List<Book> getBooksByPersonId(int id) {
+        Optional<Person> getPerson = personRepository.findById(id);
+
+        if(getPerson.isPresent()){
+            Hibernate.initialize(getPerson.get().getBooks());
+
+            getPerson.get().getBooks().forEach(book -> {
+                long millSecond = Math.abs(book.getTakenAt().getTime() - new Date().getTime());//получим время выдачи книги
+                //864000000 - 10 суток по ТЗ
+                if (millSecond > 864000000)
+                    book.setExpired(true); //не сдал после 10 суток книгу
+            });
+
+            return getPerson.get().getBooks();
+        }
+        else{
+            return Collections.emptyList();
+        }
+    }
 }

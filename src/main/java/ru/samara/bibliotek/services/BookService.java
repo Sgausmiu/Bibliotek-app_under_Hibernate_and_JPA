@@ -56,19 +56,19 @@ public class BookService {
     public void delete(int id) {
         bookRepository.deleteById(id);
     }
+    //возвращение книги в библиотеку
     @Transactional
     public void toFree (int id) {
-        bookRepository.findById(id).isPresent(
-                book -> {
-                    book.setOwner(null);
-                    book.setTakenAt(null);
-                });
+        bookRepository.findById(id).ifPresent(book -> {
+            book.setOwner(null);
+            book.setTakenAt(null);
+        });
     }
+    //взятие книги из библиотеки
     @Transactional
     public  void toAppoint (int id, Person selectedPerson) {
-        bookRepository.findById(id).isPresent(
-                book -> {
-                    book.setOwner(null);
+        bookRepository.findById(id).ifPresent(book  -> {
+                    book.setOwner(selectedPerson);
                     book.setTakenAt(new Date());
                 });
     }

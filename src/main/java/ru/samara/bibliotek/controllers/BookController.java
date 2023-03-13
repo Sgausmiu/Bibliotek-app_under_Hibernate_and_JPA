@@ -33,7 +33,7 @@ public class BookController {
     }
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person) {
-        model.addAttribute("book", bookService.findOne(id);
+        model.addAttribute("book", bookService.findOne(id));
 
         Optional<Person> bookOwner = Optional.ofNullable(bookService.getBookOwner(id));
 
