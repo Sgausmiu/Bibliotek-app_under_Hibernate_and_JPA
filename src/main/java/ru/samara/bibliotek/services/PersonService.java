@@ -64,7 +64,7 @@ public class PersonService {
                 long millSecond = Math.abs(book.getTakenAt().getTime() - new Date().getTime());//получим время выдачи книги
                 //864000000 - 10 суток по ТЗ
                 if (millSecond > 864000000)
-                    book.setExpired(true); //не сдал после 10 суток книгу
+                    book.setExpired(true); //флаг, что не сдал после 10 суток книгу
             });
 
             return getPerson.get().getBooks();
