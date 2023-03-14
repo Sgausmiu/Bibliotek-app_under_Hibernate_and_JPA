@@ -1,6 +1,7 @@
 package ru.samara.bibliotek.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +23,12 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    //поиск книг по начальным буквам
     public List<Book> searchByQuery(String query){
         return bookRepository.findByNamedStartingWith(query);
     }
+
+    //поиск книг сортированный
     public List<Book> findALL (boolean sortByYearBook) {
         if (sortByYearBook)
             return bookRepository.findAll(Sort.by("yearbook"));
@@ -32,12 +36,23 @@ public class BookService {
             return bookRepository.findAll();
     }
 
+    //пагинация страниц сортированных книг
+    public List<Book> findWithPagination(Integer page, Integer booksPerPage, boolean sortByYearBook) {
+        if(sortByYearBook)
+            return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("yearbook"))).getContent();
+        else
+            return bookRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
+
+    }
+
+    //найти одну книгу
     public Book findOne (int id) {
         Optional<Book> foundBook = bookRepository.findById(id);
         return foundBook.orElse(null);
     }
+    //eager загрузка, без hibernate.initialize() получить читателя книги
     public Person getBookOwner(int id){
-        return bookRepository.findById(id).map(Book::getOwner).orElse(null);//eager загрузка, без hibernate.initialize()
+        return bookRepository.findById(id).map(Book::getOwner).orElse(null);
     }
     @Transactional
     public void save (Book book) {
@@ -72,8 +87,4 @@ public class BookService {
                     book.setTakenAt(new Date());
                 });
     }
-
-
-
-
 }

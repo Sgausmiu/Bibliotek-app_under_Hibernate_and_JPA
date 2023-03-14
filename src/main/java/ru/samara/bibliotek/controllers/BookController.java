@@ -26,11 +26,18 @@ public class BookController {
         this.personService = personService;
 
     }
-    @GetMapping()
-    public String index(Model model, @RequestParam(value = "sort_by_year", required = false) boolean sortByYearBook){
-        model.addAttribute("books", bookService.findALL(sortByYearBook));//выводим все кинги, сортированы по году через метод sortByYearBook
-        return "books/index";//доработать по page
+    //пагинация по страницам сортированных книг
+    @GetMapping()//метод пагинации по страницам сортированных книг
+    public String index(Model model, @RequestParam(value = "page", required = false) Integer page,
+                        @RequestParam(value = "books_per_page", required = false) Integer booksPerPage,
+                        @RequestParam(value = "sort_by_year", required = false) boolean sortByYearBook){
+        if (page == null || booksPerPage == null)
+            model.addAttribute("books", bookService.findALL(sortByYearBook));//выдать все книги сортированно
+        else
+            model.addAttribute("books", bookService.findWithPagination(page, booksPerPage, sortByYearBook));
+        return "books/index";
     }
+    //посмотреть наличие книги у читателя
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model, @ModelAttribute("person") Person person) {
         model.addAttribute("book", bookService.findOne(id));
@@ -78,14 +85,17 @@ public class BookController {
     public String delete (@PathVariable("id") int id) {
         bookService.delete(id);
         return "redirect:/books";
+
     }
+    //освободить книгу
     @PatchMapping("/{id}/tofree")
-    public String toFree(@PathVariable("id") int id){//как release у Алишева переделать
+    public String toFree(@PathVariable("id") int id){
         bookService.toFree(id);
         return "redirect:/books/"+ id;
     }
+    //назначить книгу
     @PatchMapping("/{id}/toappoint")
-    public String toAppoint(@PathVariable("id") int id, @ModelAttribute("person") Person selectedPerson){//как assign у Алишева переделать
+    public String toAppoint(@PathVariable("id") int id, @ModelAttribute("person") Person selectedPerson){
         bookService.toAppoint(id, selectedPerson);
         return "redirect:/books/"+ id;
     }

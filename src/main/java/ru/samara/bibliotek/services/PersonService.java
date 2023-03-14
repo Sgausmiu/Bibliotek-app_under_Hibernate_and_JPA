@@ -23,14 +23,16 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
+    //вывести читателя
     public Optional<Person> findByFullName(String fullname){
         return personRepository.findByFullName(fullname);
     }
-
+    //получить читателей
     public List<Person> findALL(){
         return personRepository.findAll();
     }
 
+    //получить одного читателя
     public Person findOne(int id) {
         Optional<Person> foundPerson = personRepository.findById(id);
         return foundPerson.orElse(null);
@@ -51,6 +53,7 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
+    //получение человека с книгой, с проверкой книги на просрочку > 10 суток
     public List<Book> getBooksByPersonId(int id) {
         Optional<Person> getPerson = personRepository.findById(id);
 
