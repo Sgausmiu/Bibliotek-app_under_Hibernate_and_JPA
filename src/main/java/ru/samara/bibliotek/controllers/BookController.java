@@ -1,5 +1,6 @@
 package ru.samara.bibliotek.controllers;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +21,11 @@ public class BookController {
     private final BookService bookService;
     private final PersonService personService;
 
+
     @Autowired
     public BookController(BookService bookService, PersonService personService) {
         this.bookService = bookService;
         this.personService = personService;
-
     }
     //пагинация по страницам сортированных книг
     @GetMapping()//метод пагинации по страницам сортированных книг
@@ -88,13 +89,13 @@ public class BookController {
 
     }
     //освободить книгу
-    @PatchMapping("/{id}/tofree")
+    @PatchMapping("/{id}/toFree")
     public String toFree(@PathVariable("id") int id){
         bookService.toFree(id);
         return "redirect:/books/"+ id;
     }
     //назначить книгу
-    @PatchMapping("/{id}/toappoint")
+    @PatchMapping("/{id}/toAppoint")
     public String toAppoint(@PathVariable("id") int id, @ModelAttribute("person") Person selectedPerson){
         bookService.toAppoint(id, selectedPerson);
         return "redirect:/books/"+ id;
