@@ -52,7 +52,15 @@ public class BookService {
     }
     //eager загрузка, без hibernate.initialize() получить читателя книги
     public Person getBookOwner(int id){
-        return bookRepository.findById(id).map(Book::getOwner).orElse(null);
+        //return bookRepository.findById(id).map(Book::getOwner).orElse(null); ранее было так - ошибка несовместимого типа аргументов
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isPresent()) {
+            Book b = book.get();
+            Person owner = b.getOwner();
+            return owner;
+        } else {
+            return null;
+        }
     }
     @Transactional
     public void save (Book book) {
@@ -74,17 +82,15 @@ public class BookService {
     //возвращение книги в библиотеку
     @Transactional
     public void toFree (int id) {
-        bookRepository.findById(id).ifPresent(book -> {
-            book.setOwner(null);
-            book.setTakenAt(null);
-        });
+        Optional<Book> bookOpt =bookRepository.findById(id);
+        bookOpt.ifPresent(book -> {book.setOwner(null);
+        book.setTakenAt(null);});
     }
     //взятие книги из библиотеки
     @Transactional
     public  void toAppoint (int id, Person selectedPerson) {
-        bookRepository.findById(id).ifPresent(book  -> {
-                    book.setOwner(selectedPerson);
-                    book.setTakenAt(new Date());
-                });
+        Optional<Book> bookOpt =bookRepository.findById(id);
+        bookOpt.ifPresent(book -> {book.setOwner(selectedPerson);
+            book.setTakenAt(new Date());});
     }
 }

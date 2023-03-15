@@ -17,6 +17,7 @@
     <maven.compiler.target>1.7</maven.compiler.target>
 
     <spring.version>5.3.24</spring.version>
+    <hibernate.version>6.1.7.Final</hibernate.version>
   </properties>
 
   <dependencies>
@@ -105,7 +106,19 @@
       <version>6.0.5</version>
     </dependency>
 
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+      <type>pom</type>
+    </dependency>
 
 
 

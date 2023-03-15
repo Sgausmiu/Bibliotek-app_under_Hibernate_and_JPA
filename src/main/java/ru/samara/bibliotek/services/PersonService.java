@@ -1,12 +1,12 @@
 package ru.samara.bibliotek.services;
 
+//import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.samara.bibliotek.models.Book;
 import ru.samara.bibliotek.models.Person;
 import ru.samara.bibliotek.repositories.PersonRepository;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -54,11 +54,12 @@ public class PersonService {
     }
 
     //получение человека с книгой, с проверкой книги на просрочку > 10 суток
+    //Hibernate.initialize раскомментировать для Lazy load
     public List<Book> getBooksByPersonId(int id) {
         Optional<Person> getPerson = personRepository.findById(id);
 
         if(getPerson.isPresent()){
-            Hibernate.initialize(getPerson.get().getBooks());
+            /*Hibernate.initialize*/getPerson.get().getBooks();
 
             getPerson.get().getBooks().forEach(book -> {
                 long millSecond = Math.abs(book.getTakenAt().getTime() - new Date().getTime());//получим время выдачи книги
