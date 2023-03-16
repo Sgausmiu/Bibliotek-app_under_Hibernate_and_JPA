@@ -1,6 +1,5 @@
 package ru.samara.bibliotek.config;
 
-import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -25,20 +24,21 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+
 @Configuration
 @ComponentScan("ru.samara.bibliotek")
 @PropertySource("classpath:hibernate.properties")
 @EnableTransactionManagement
 @EnableJpaRepositories("ru.samara.bibliotek.repositories")
 @EnableWebMvc
-public class BibliotekSpringConfig implements WebMvcConfigurer {
+public class BibliotekSpringConfig  implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
     private final Environment env;
 
     @Autowired
-    public BibliotekSpringConfig(ApplicationContext applicationContext, Environment env) {
+    public BibliotekSpringConfig (ApplicationContext applicationContext, Environment env) {
         this.applicationContext = applicationContext;
         this.env = env;
     }
@@ -63,10 +63,11 @@ public class BibliotekSpringConfig implements WebMvcConfigurer {
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
-        ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
-        thymeleafViewResolver.setTemplateEngine(templateEngine());
-        thymeleafViewResolver.setCharacterEncoding("UTF-8");
-        registry.viewResolver(thymeleafViewResolver);
+        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(templateEngine());
+        resolver.setCharacterEncoding("UTF-8");
+
+        registry.viewResolver(resolver);
     }
 
     @Bean
@@ -79,10 +80,9 @@ public class BibliotekSpringConfig implements WebMvcConfigurer {
         dataSource.setPassword(env.getRequiredProperty("hibernate.connection.password"));
 
         return dataSource;
-
     }
 
-    private Properties hibernateProperties(){
+    private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", env.getRequiredProperty("hibernate.show_sql"));
@@ -94,7 +94,7 @@ public class BibliotekSpringConfig implements WebMvcConfigurer {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("ru.samara.bibliotek.models");
+        em.setPackagesToScan("ru.alishev.springcourse.models");
 
         final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -106,7 +106,7 @@ public class BibliotekSpringConfig implements WebMvcConfigurer {
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory((EntityManagerFactory) entityManagerFactory());//либо добавить .getObject() и убрать (EntityManagerFactory)
+        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 
         return transactionManager;
     }
